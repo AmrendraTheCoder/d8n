@@ -8,7 +8,7 @@ import {
   useEdgesState,
   addEdge,
 } from "reactflow";
-import { Settings, Save, Zap, X, Wallet, FolderOpen, Database, BarChart3, Newspaper, Trash2 } from "lucide-react";
+import { Settings, Save, Zap, X, Wallet, FolderOpen, Database, BarChart3, Newspaper, Trash2, Code, Store, Play } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import WorkflowCanvas from "./components/WorkflowCanvas";
 import SettingsPanel from "./components/SettingsPanel";
@@ -19,6 +19,8 @@ import GlobalSettingsModal from "./components/GlobalSettingsModal";
 import ExecutionLogsPanel, { useExecutionLogs } from "./components/ExecutionLogsPanel";
 import ChartsPanel from "./components/ChartsPanel";
 import NewsPanel from "./components/NewsPanel";
+import ExportPanel from "./components/ExportPanel";
+import MarketplacePanel from "./components/MarketplacePanel";
 
 // Import wagmi hooks
 import { useAccount, useConnect, useDisconnect } from "wagmi";
@@ -79,6 +81,8 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isChartsOpen, setIsChartsOpen] = useState(false);
   const [isNewsOpen, setIsNewsOpen] = useState(false);
+  const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isMarketplaceOpen, setIsMarketplaceOpen] = useState(false);
   const { address, isConnected } = useAccount();
   const { executeWorkflow } = useWorkflowExecution();
   const { currentExecutingNode, workflowCompleted } = useNodeStatus(address);
@@ -147,6 +151,26 @@ export default function App() {
   const onPaneClick = useCallback(() => {
     setSelectedNode(null);
   }, []);
+
+  // Demo Mode - Pre-built workflow for judges to test quickly
+  const loadDemoWorkflow = useCallback(() => {
+    const demoNodes = [
+      { id: "demo-1", type: "custom", position: { x: 100, y: 150 }, data: { label: "Pyth ETH/USD Price", type: "pyth-network", inputs: {}, outputs: { price: { type: "float" } }, node_data: { symbol: "ETH_USD" } } },
+      { id: "demo-2", type: "custom", position: { x: 400, y: 100 }, data: { label: "x402 Payment Gate", type: "nexusPay", inputs: { trigger: { type: "any" } }, outputs: { data: { type: "json" } }, node_data: { api_url: "http://localhost:3001/api/premium-data" } } },
+      { id: "demo-3", type: "custom", position: { x: 400, y: 250 }, data: { label: "Price > $3000?", type: "condition", inputs: { price: { type: "float" } }, outputs: { "true": { type: "bool" }, "false": { type: "bool" } }, node_data: { condition: "price > 3000" } } },
+      { id: "demo-4", type: "custom", position: { x: 700, y: 100 }, data: { label: "Swap USDC → ETH", type: "swap", inputs: { activate: { type: "bool" } }, outputs: { tx: { type: "string" } }, node_data: { from: "USDC", to: "ETH", amount: "100" } } },
+      { id: "demo-5", type: "custom", position: { x: 700, y: 250 }, data: { label: "Hold Position", type: "condition", inputs: {}, outputs: {}, node_data: {} } },
+    ];
+    const demoEdges = [
+      { id: "demo-e1", source: "demo-1", target: "demo-2", type: "default" },
+      { id: "demo-e2", source: "demo-1", target: "demo-3", type: "default" },
+      { id: "demo-e3", source: "demo-2", target: "demo-4", type: "default" },
+      { id: "demo-e4", source: "demo-3", target: "demo-5", type: "default" },
+    ];
+    setNodes(demoNodes);
+    setEdges(demoEdges);
+    setWorkflowName("AI Trading with x402 Payments");
+  }, [setNodes, setEdges]);
 
   const addNode = useCallback(
     (type) => {
@@ -437,6 +461,36 @@ export default function App() {
                 <span className="hidden md:inline">News</span>
               </button>
 
+              {/* API Marketplace Button */}
+              <button
+                onClick={() => setIsMarketplaceOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-2 bg-violet-50 text-violet-700 hover:bg-violet-100 rounded-lg transition-all text-sm font-medium border border-violet-200"
+                title="x402 API Marketplace"
+              >
+                <Store size={18} />
+                <span className="hidden md:inline">APIs</span>
+              </button>
+
+              {/* Demo Mode Button */}
+              <button
+                onClick={loadDemoWorkflow}
+                className="flex items-center gap-1.5 px-3 py-2 bg-green-50 text-green-700 hover:bg-green-100 rounded-lg transition-all text-sm font-medium border border-green-200"
+                title="Load Demo Workflow"
+              >
+                <Play size={18} />
+                <span className="hidden md:inline">Demo</span>
+              </button>
+
+              {/* Export Button */}
+              <button
+                onClick={() => setIsExportOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all text-sm font-medium"
+                title="Export Workflow as Code"
+              >
+                <Code size={18} />
+                <span className="hidden md:inline">Export</span>
+              </button>
+
               {/* Clear Canvas Button */}
               <button
                 onClick={() => { setNodes([]); setEdges([]); }}
@@ -548,6 +602,36 @@ export default function App() {
         <NewsPanel
           isOpen={isNewsOpen}
           onClose={() => setIsNewsOpen(false)}
+        />
+
+        {/* Export Panel */}
+        <ExportPanel
+          isOpen={isExportOpen}
+          onClose={() => setIsExportOpen(false)}
+          nodes={nodes}
+          edges={edges}
+          workflowName={workflowName}
+        />
+
+        {/* API Marketplace Panel */}
+        <MarketplacePanel
+          isOpen={isMarketplaceOpen}
+          onClose={() => setIsMarketplaceOpen(false)}
+          onAddAPI={(api) => {
+            const newNode = {
+              id: `api-${Date.now()}`,
+              type: "custom",
+              position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
+              data: {
+                label: api.name,
+                type: api.category === "oracle" ? "pyth-network" : api.category === "ai" ? "nexusPay" : "registryQuery",
+                inputs: {},
+                outputs: { data: { type: "json" } },
+                node_data: { api_id: api.id, price: api.pricePerCall },
+              },
+            };
+            setNodes((nds) => [...nds, newNode]);
+          }}
         />
       </div>
     </ReactFlowProvider>
