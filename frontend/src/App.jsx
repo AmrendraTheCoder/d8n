@@ -8,12 +8,15 @@ import {
   useEdgesState,
   addEdge,
 } from "reactflow";
+import { Settings, Save, Zap } from "lucide-react";
 import Sidebar from "./components/Sidebar";
 import WorkflowCanvas from "./components/WorkflowCanvas";
 import SettingsPanel from "./components/SettingsPanel";
 import ViewWorkflows from "./components/ViewWorkflows";
 import HypergraphSaver from "./components/HypergraphSaver";
 import HypergraphQuerier from "./components/HypergraphQuerier";
+import GlobalSettingsModal from "./components/GlobalSettingsModal";
+import ExecutionLogsPanel, { useExecutionLogs } from "./components/ExecutionLogsPanel";
 
 // Import wagmi hooks
 import { useAccount, useConnect, useDisconnect } from "wagmi";
@@ -70,9 +73,11 @@ export default function App() {
   const [workflowName, setWorkflowName] = useState("My Arbitrage Workflow");
   const [workflowType, setWorkflowType] = useState("once");
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const { address, isConnected } = useAccount();
   const { executeWorkflow } = useWorkflowExecution();
   const { currentExecutingNode, workflowCompleted } = useNodeStatus(address);
+  const { logs, isExecuting, addLog, clearLogs, startExecution, endExecution } = useExecutionLogs();
 
   // Trigger confetti when workflow completes
   useEffect(() => {
@@ -370,27 +375,32 @@ export default function App() {
             <div className="flex items-center bg-slate-100 rounded-lg p-1">
               <button
                 onClick={() => setWorkflowType("once")}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  workflowType === "once"
-                    ? "bg-white text-slate-800 shadow-sm"
-                    : "text-slate-600 hover:text-slate-800"
-                }`}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${workflowType === "once"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+                  }`}
               >
                 Once
               </button>
               <button
                 onClick={() => setWorkflowType("repeat")}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-                  workflowType === "repeat"
-                    ? "bg-white text-slate-800 shadow-sm"
-                    : "text-slate-600 hover:text-slate-800"
-                }`}
+                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${workflowType === "repeat"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-600 hover:text-slate-800"
+                  }`}
               >
                 Repeat
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
+              title="Global Settings"
+            >
+              <Settings size={20} />
+            </button>
             <ViewWorkflows onLoadWorkflow={loadWorkflow} />
             <HypergraphQuerier />
             <HypergraphSaver
@@ -400,9 +410,10 @@ export default function App() {
             />
             <button
               onClick={handleSave}
-              className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
+              className="flex items-center gap-2 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
             >
-              Save to DB
+              <Save size={16} />
+              Save
             </button>
             <WalletConnector />
           </div>
@@ -436,6 +447,19 @@ export default function App() {
             />
           )}
         </div>
+
+        {/* Execution Logs */}
+        <ExecutionLogsPanel
+          logs={logs}
+          isExecuting={isExecuting}
+          onClear={clearLogs}
+        />
+
+        {/* Global Settings Modal */}
+        <GlobalSettingsModal
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+        />
       </div>
     </ReactFlowProvider>
   );

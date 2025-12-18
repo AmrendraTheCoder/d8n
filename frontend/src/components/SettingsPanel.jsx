@@ -337,6 +337,133 @@ export default function SettingsPanel({ node, onUpdateNode, onDeselect }) {
             />
           </div>
         );
+      case "nexusPay":
+        return (
+          <div className="flex flex-col gap-4">
+            <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+              <p className="text-sm text-purple-700">
+                🔐 <strong>Nexus Pay</strong> handles HTTP 402 Payment Required flows automatically.
+              </p>
+            </div>
+            <div>
+              <label htmlFor="url" className="font-semibold">
+                API URL
+              </label>
+              <input
+                id="url"
+                name="url"
+                value={node.data.node_data?.url || "http://localhost:4000/api/news/crypto"}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+                placeholder="https://api.example.com/data"
+              />
+              <p className="text-xs text-slate-500 mt-1">URL that may return 402 Payment Required</p>
+            </div>
+            <div>
+              <label htmlFor="chainId" className="font-semibold">
+                Chain ID
+              </label>
+              <select
+                id="chainId"
+                name="chainId"
+                value={node.data.node_data?.chainId || 240}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+              >
+                <option value={240}>Cronos zkEVM Testnet (240)</option>
+                <option value={388}>Cronos zkEVM Mainnet (388)</option>
+                <option value={25}>Cronos Mainnet (25)</option>
+                <option value={338}>Cronos Testnet (338)</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="nexusBackendUrl" className="font-semibold">
+                Nexus Backend URL
+              </label>
+              <input
+                id="nexusBackendUrl"
+                name="nexusBackendUrl"
+                value={node.data.node_data?.nexusBackendUrl || "http://localhost:3001"}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+                placeholder="http://localhost:3001"
+              />
+            </div>
+          </div>
+        );
+      case "registryQuery":
+        return (
+          <div className="flex flex-col gap-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-sm text-blue-700">
+                📋 <strong>Service Registry</strong> queries on-chain registered API providers.
+              </p>
+            </div>
+            <div>
+              <label htmlFor="category" className="font-semibold">
+                Service Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={node.data.node_data?.category || "news"}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+              >
+                <option value="news">News</option>
+                <option value="weather">Weather</option>
+                <option value="price">Price Feeds</option>
+                <option value="analytics">Analytics</option>
+                <option value="ai">AI/ML</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="maxPrice" className="font-semibold">
+                Max Price (wei)
+              </label>
+              <input
+                id="maxPrice"
+                name="maxPrice"
+                value={node.data.node_data?.maxPrice || "1000000000000000000"}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+                placeholder="1000000000000000000"
+              />
+              <p className="text-xs text-slate-500 mt-1">Maximum price willing to pay (1 ETH = 10^18 wei)</p>
+            </div>
+            <div>
+              <label htmlFor="chainId" className="font-semibold">
+                Chain ID
+              </label>
+              <select
+                id="chainId"
+                name="chainId"
+                value={node.data.node_data?.chainId || 240}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+              >
+                <option value={240}>Cronos zkEVM Testnet (240)</option>
+                <option value={388}>Cronos zkEVM Mainnet (388)</option>
+                <option value={25}>Cronos Mainnet (25)</option>
+                <option value={338}>Cronos Testnet (338)</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="registryAddress" className="font-semibold">
+                Registry Contract Address
+              </label>
+              <input
+                id="registryAddress"
+                name="registryAddress"
+                value={node.data.node_data?.registryAddress || ""}
+                onChange={handleInputChange}
+                className="p-2 border rounded w-full mt-1"
+                placeholder="0x... (leave empty for default)"
+              />
+            </div>
+          </div>
+        );
       default:
         return <p>No settings available for this node.</p>;
     }

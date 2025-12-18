@@ -1,0 +1,16 @@
+{
+  "name": "d8n-nexus",
+  "version": "1.0.0",
+  "description": "D8N + Nexus Ecosystem",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend && npm install --prefix engine && npm install --prefix mock-provider",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:engine": "npm run dev --prefix engine",
+    "dev:mock": "npm run dev --prefix mock-provider",
+    "start": "npx concurrently -n 'backend,frontend,engine,mock' -c 'blue,green,yellow,magenta' 'npm run dev:backend' 'npm run dev:frontend' 'npm run dev:engine' 'npm run dev:mock'"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

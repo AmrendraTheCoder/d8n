@@ -5,24 +5,45 @@ import "./index.css";
 
 // 1. Import wagmi and dependencies
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
+import { mainnet, sepolia, baseSepolia, polygonAmoy } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { metaMask } from "wagmi/connectors";
 
-// 2. Create wagmi config
+// Custom chain: Cronos zkEVM Testnet
+const cronosZkEvmTestnet = {
+  id: 240,
+  name: "Cronos zkEVM Testnet",
+  nativeCurrency: {
+    name: "zkCRO",
+    symbol: "zkCRO",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: { http: ["https://testnet.zkevm.cronos.org"] },
+  },
+  blockExplorers: {
+    default: { name: "Cronos zkEVM Explorer", url: "https://explorer.zkevm.cronos.org/testnet" },
+  },
+  testnet: true,
+};
+
+// 2. Create wagmi config with multi-chain support
 const config = createConfig({
-  chains: [mainnet, sepolia], // Add the chains you want to support
+  chains: [cronosZkEvmTestnet, baseSepolia, polygonAmoy, sepolia, mainnet],
   connectors: [
     metaMask({
       dappMetadata: {
-        name: "d8n Workflow Automation",
+        name: "Nexus DeFi Autopilot",
         url: window.location.host,
       },
     }),
   ],
   transports: {
-    [mainnet.id]: http(),
+    [cronosZkEvmTestnet.id]: http("https://testnet.zkevm.cronos.org"),
+    [baseSepolia.id]: http(),
+    [polygonAmoy.id]: http(),
     [sepolia.id]: http(),
+    [mainnet.id]: http(),
   },
 });
 
@@ -39,3 +60,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </WagmiProvider>
   </React.StrictMode>
 );
+

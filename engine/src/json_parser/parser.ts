@@ -6,6 +6,8 @@ import { UniswapNode } from "../components/UniswapNode.js";
 import { sendTokenNode } from "../components/sendTokenNode.js";
 import { QueryBalanceNode } from "../components/QueryBalanceNode.js";
 import { LimitOrderNode } from "../components/LimitOrderNode.js";
+import { NexusPayNode } from "../components/NexusPayNode.js";
+import { RegistryQueryNode } from "../components/RegistryQueryNode.js";
 import { Workflow } from "../components/Workflow.js";
 import type { Edges } from "../interfaces/Edges.js";
 import type { Node } from "../interfaces/Node.js";
@@ -45,6 +47,27 @@ export function parse_workflow(json_workflow: WorkflowSchema) {
       case "limitOrder":
         nodes[id] = new LimitOrderNode(id, schema.label, nodeData.makerToken, nodeData.takerToken, nodeData.makingAmount, nodeData.takingAmount);
         break;
+      // ========== NEXUS NODES ==========
+      case "nexusPay":
+        nodes[id] = new NexusPayNode(
+          id,
+          schema.label,
+          nodeData.url,
+          nodeData.walletAddress || json_workflow.walletaddr,
+          nodeData.chainId || 240,
+          nodeData.nexusBackendUrl || "http://localhost:3001"
+        );
+        break;
+      case "registryQuery":
+        nodes[id] = new RegistryQueryNode(
+          id,
+          schema.label,
+          nodeData.category || "news",
+          nodeData.maxPrice || "1000000000000000000",
+          nodeData.chainId || 240,
+          nodeData.registryAddress || ""
+        );
+        break;
       default:
         console.warn(`Unknown node type: ${schema.type} at node ${id}`);
     }
@@ -52,3 +75,4 @@ export function parse_workflow(json_workflow: WorkflowSchema) {
 
   return new Workflow(type, nodes, edges);
 }
+

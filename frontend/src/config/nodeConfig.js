@@ -61,4 +61,34 @@ export const NODE_CONFIG = {
     outputs: {},
     node_data: { sample: "sample" },
   },
+  // ========== NEXUS NODES ==========
+  nexusPay: {
+    label: "Nexus Pay (402 API)",
+    inputs: { activate: { type: "bool" } },
+    outputs: { 
+      data: { type: "object" }, 
+      txHash: { type: "string" }, 
+      cost: { type: "string" } 
+    },
+    node_data: {
+      url: "http://localhost:4000/api/news/crypto",
+      chainId: 240,
+      nexusBackendUrl: "http://localhost:3001",
+    },
+  },
+  registryQuery: {
+    label: "Service Registry",
+    inputs: { activate: { type: "bool" } },
+    outputs: { 
+      services: { type: "array" },
+      count: { type: "number" }
+    },
+    node_data: {
+      category: "news",
+      maxPrice: "1000000000000000000",
+      chainId: 240,
+      registryAddress: "",
+    },
+  },
 };
+

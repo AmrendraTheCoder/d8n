@@ -1,24 +1,132 @@
 @import "tailwindcss";
 @import "reactflow/dist/style.css";
 
-body {
-  background-color: #f3f4f6; /* A light gray background */
+/* Custom scrollbar for modern feel */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-/* Custom styles for React Flow to match the Excalidraw/n8n feel */
-.react-flow .react-flow__handle {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border: 1px solid #94a3b8;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  min-height: 100vh;
+}
+
+/* React Flow custom styles */
+.react-flow .react-flow__handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.react-flow .react-flow__handle:hover {
+  transform: scale(1.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
 }
 
 .react-flow .react-flow__handle-connecting {
-  background: #60a5fa;
+  background: linear-gradient(135deg, #22c55e, #10b981);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
 }
 
 .react-flow .react-flow__edge-path {
   stroke: #94a3b8;
   stroke-width: 2;
+  transition: stroke 0.2s ease;
+}
+
+.react-flow .react-flow__edge:hover .react-flow__edge-path {
+  stroke: #3b82f6;
+  stroke-width: 3;
+}
+
+/* Custom node styles */
+.react-flow__node-custom {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.react-flow__node-custom:hover {
+  transform: translateY(-2px);
+}
+
+.react-flow__node-custom.selected {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Executing node animation */
+.react-flow__node-custom.executing {
+  animation: pulse-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.6);
+  }
+}
+
+/* Header gradient */
+.header-gradient {
+  background: linear-gradient(to right, #ffffff, #f8fafc);
+}
+
+/* Button animations */
+button {
+  transition: all 0.15s ease;
+}
+
+/* Gradient text for branding */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glass morphism effect for modals */
+.glass {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Smooth page transitions */
+.page-transition {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Add padding at bottom for logs panel */
+#root > div > div.flex-grow {
+  padding-bottom: 40px;
 }
