@@ -156,14 +156,14 @@ export default function HypergraphSaver({ workflowName, nodes, edges }) {
     <button
       onClick={handleSaveToHypergraph}
       disabled={!isConnected || isLoading}
-      className="bg-purple-600 text-white font-bold py-2 px-4 rounded hover:bg-purple-700 flex items-center gap-2 disabled:bg-slate-400 disabled:cursor-not-allowed"
+      className="flex items-center gap-1.5 px-3 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all text-sm font-medium disabled:text-slate-400 disabled:cursor-not-allowed"
     >
       {isLoading ? (
         <Loader2 className="animate-spin" size={16} />
       ) : (
         <UploadCloud size={16} />
       )}
-      {isLoading ? statusMessage : "Save to Hypergraph"}
+      {isLoading ? "Saving..." : "Hypergraph"}
     </button>
   );
 }

@@ -47,9 +47,9 @@ export default function ViewWorkflows({ onLoadWorkflow }) {
     <>
       <button
         onClick={handleOpen}
-        className="bg-slate-600 text-white font-bold py-2 px-4 rounded hover:bg-slate-700 flex items-center gap-2"
+        className="flex items-center gap-1.5 px-3 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all text-sm font-medium"
       >
-        <BookUser size={16} /> My Workflows
+        <BookUser size={16} /> Workflows
       </button>
 
       {isOpen && (

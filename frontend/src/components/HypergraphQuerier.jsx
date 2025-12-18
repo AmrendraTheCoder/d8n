@@ -149,10 +149,10 @@ export default function HypergraphQuerier() {
       {/* Navbar Button */}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700 flex items-center gap-2"
+        className="flex items-center gap-1.5 px-3 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-all text-sm font-medium"
       >
         <Search size={16} />
-        Query Workflow
+        Query
       </button>
 
       {/* Modal */}

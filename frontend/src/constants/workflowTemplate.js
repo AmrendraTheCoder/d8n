@@ -1,12 +1,13 @@
 import { tokens } from "./tokenMappings";
+
 /**
  * Template 1: Simple "Buy the Dip" Strategy
- * Description: Monitors the price of ETH/USD. If the price drops below a
- * specified target ($4,500), it executes a swap from a stablecoin (USDC) to ETH.
  */
 export const buyTheDipTemplate = {
   name: "Buy The Dip (WETH)",
   description: "Swaps USDC for WETH when the price drops below $4,500.",
+  category: "defi",
+  difficulty: "Beginner",
   nodes: [
     {
       id: "pyth-1",
@@ -35,7 +36,7 @@ export const buyTheDipTemplate = {
         node_data: {
           tokenIn: tokens.USDC.address,
           tokenOut: tokens.WETH.address,
-          amountIn: "1000000", // 10 USDC with 6 decimals
+          amountIn: "1000000",
           amountOutMin: "0",
         },
       },
@@ -45,54 +46,33 @@ export const buyTheDipTemplate = {
       type: "print",
       position: { x: 650, y: 250 },
       data: {
-        label: "Print: No Action",
+        label: "No Action",
         node_data: { sample: "Price is above threshold. No action taken." },
       },
     },
   ],
   edges: [
-    {
-      id: "e1-2",
-      source: "pyth-1",
-      target: "condition-1",
-      sourceHandle: "price",
-      targetHandle: "price",
-    },
-    {
-      id: "e2-3",
-      source: "condition-1",
-      target: "swap-1",
-      sourceHandle: "true-path",
-      targetHandle: "activate",
-      label: "True",
-    },
-    {
-      id: "e2-4",
-      source: "condition-1",
-      target: "print-1",
-      sourceHandle: "false-path",
-      targetHandle: "test",
-      label: "False",
-    },
+    { id: "e1-2", source: "pyth-1", target: "condition-1", sourceHandle: "price", targetHandle: "price" },
+    { id: "e2-3", source: "condition-1", target: "swap-1", sourceHandle: "true-path", targetHandle: "activate", label: "True" },
+    { id: "e2-4", source: "condition-1", target: "print-1", sourceHandle: "false-path", targetHandle: "test", label: "False" },
   ],
 };
 
 /**
  * Template 2: Payroll Executor
- * Description: Queries wallet balance and conditionally sends tokens to multiple recipients
- * based on balance conditions. Used for automated payroll distribution.
  */
 export const takeProfitTemplate = {
   name: "Payroll Executor",
-  description:
-    "Queries balance and sends tokens to multiple recipients based on conditions.",
+  description: "Queries balance and sends tokens to multiple recipients based on conditions.",
+  category: "defi",
+  difficulty: "Intermediate",
   nodes: [
     {
       id: "2",
       type: "queryBalance",
-      position: { x: -26.175446148147614, y: 4.589882602126821 },
+      position: { x: -26, y: 5 },
       data: {
-        label: "Query balance",
+        label: "Query Balance",
         node_data: {
           tokenAddress: "",
           walletAddress: "0x8a453B41c6E454D5b3152f32908Bc9A0DDa689B4",
@@ -102,18 +82,18 @@ export const takeProfitTemplate = {
     {
       id: "3",
       type: "condition",
-      position: { x: 262.0481571871899, y: 71.09010289220775 },
+      position: { x: 262, y: 71 },
       data: {
-        label: "Condition",
+        label: "Balance Check",
         node_data: { condition: "price > 0.2" },
       },
     },
     {
       id: "4",
       type: "sendToken",
-      position: { x: 643.5793536980883, y: -71.93722709194532 },
+      position: { x: 644, y: -72 },
       data: {
-        label: "Send Token to any address",
+        label: "Send to Recipient 1",
         node_data: {
           tokenAddress: "",
           destination: "0xa9aaC8b17F7fb7dF0104ECd53F8b635b8052b97E",
@@ -124,9 +104,9 @@ export const takeProfitTemplate = {
     {
       id: "5",
       type: "sendToken",
-      position: { x: 639.5870948696503, y: 97.32078227214592 },
+      position: { x: 640, y: 97 },
       data: {
-        label: "Send Token to any address",
+        label: "Send to Recipient 2",
         node_data: {
           tokenAddress: "",
           destination: "0xaa8A4A0df322aB0a1B5D623450ee1d426aC43C2F",
@@ -137,9 +117,9 @@ export const takeProfitTemplate = {
     {
       id: "7",
       type: "sendToken",
-      position: { x: 644.3980511109968, y: 277.34098178853526 },
+      position: { x: 644, y: 277 },
       data: {
-        label: "Send Token to any address",
+        label: "Send to Recipient 3",
         node_data: {
           tokenAddress: "",
           destination: "0xaa8A4A0df322aB0a1B5D623450ee1d426aC43C2F",
@@ -149,49 +129,21 @@ export const takeProfitTemplate = {
     },
   ],
   edges: [
-    {
-      id: "e2-3",
-      source: "2",
-      target: "3",
-      sourceHandle: "balance",
-      targetHandle: "price",
-    },
-    {
-      id: "e3-4",
-      source: "3",
-      target: "4",
-      sourceHandle: "true-path",
-      targetHandle: "activate",
-      label: "True",
-    },
-    {
-      id: "e3-5",
-      source: "3",
-      target: "5",
-      sourceHandle: "true-path",
-      targetHandle: "activate",
-      label: "True",
-    },
-    {
-      id: "e3-7",
-      source: "3",
-      target: "7",
-      sourceHandle: "true-path",
-      targetHandle: "activate",
-      label: "True",
-    },
+    { id: "e2-3", source: "2", target: "3", sourceHandle: "balance", targetHandle: "price" },
+    { id: "e3-4", source: "3", target: "4", sourceHandle: "true-path", targetHandle: "activate", label: "True" },
+    { id: "e3-5", source: "3", target: "5", sourceHandle: "true-path", targetHandle: "activate", label: "True" },
+    { id: "e3-7", source: "3", target: "7", sourceHandle: "true-path", targetHandle: "activate", label: "True" },
   ],
 };
 
 /**
  * Template 3: Simple Limit Order Strategy
- * Description: Monitors the price of BTC/USD and places a limit order to buy INCH
- * when the price is above $50,000. This demonstrates a basic limit order workflow.
  */
 export const priceRangeAlertTemplate = {
-  name: "Simple Limit Order (INCH)",
-  description:
-    "Places a limit order to buy INCH when BTC price is above $50,000.",
+  name: "Limit Order (INCH)",
+  description: "Places a limit order to buy INCH when BTC price is above $50,000.",
+  category: "defi",
+  difficulty: "Intermediate",
   nodes: [
     {
       id: "pyth-1",
@@ -230,36 +182,232 @@ export const priceRangeAlertTemplate = {
       type: "print",
       position: { x: 650, y: 250 },
       data: {
-        label: "Print: No Order",
-        node_data: {
-          sample: "Price is above threshold. No limit order placed.",
-        },
+        label: "No Order",
+        node_data: { sample: "Price below threshold. No limit order placed." },
       },
     },
   ],
   edges: [
-    {
-      id: "e1-2",
-      source: "pyth-1",
-      target: "condition-1",
-      sourceHandle: "price",
-      targetHandle: "price",
-    },
-    {
-      id: "e2-3",
-      source: "condition-1",
-      target: "limitOrder-1",
-      sourceHandle: "true-path",
-      targetHandle: "activate",
-      label: "True",
-    },
-    {
-      id: "e2-4",
-      source: "condition-1",
-      target: "print-1",
-      sourceHandle: "false-path",
-      targetHandle: "test",
-      label: "False",
-    },
+    { id: "e1-2", source: "pyth-1", target: "condition-1", sourceHandle: "price", targetHandle: "price" },
+    { id: "e2-3", source: "condition-1", target: "limitOrder-1", sourceHandle: "true-path", targetHandle: "activate", label: "True" },
+    { id: "e2-4", source: "condition-1", target: "print-1", sourceHandle: "false-path", targetHandle: "test", label: "False" },
   ],
 };
+
+// ============================================
+// NEXUS x402 TEMPLATES
+// ============================================
+
+/**
+ * Template 4: x402 Crypto News Feed
+ */
+export const x402CryptoNewsTemplate = {
+  name: "x402 Crypto News Feed",
+  description: "Fetches premium crypto news using automatic 402 payment. Demonstrates the Nexus Pay flow.",
+  category: "nexus",
+  difficulty: "Beginner",
+  featured: true,
+  learnMore: "This template shows how x402 (HTTP 402 Payment Required) enables automatic micropayments for API access. When the API returns 402, Nexus Pay handles the blockchain payment and retries to unlock the data.",
+  nodes: [
+    {
+      id: "nexus-pay-1",
+      type: "nexusPay",
+      position: { x: 100, y: 150 },
+      data: {
+        label: "Fetch Crypto News",
+        node_data: {
+          url: "http://localhost:4000/api/news/crypto",
+          chainId: 240,
+          nexusBackendUrl: "http://localhost:3001",
+        },
+      },
+    },
+    {
+      id: "print-result",
+      type: "print",
+      position: { x: 450, y: 150 },
+      data: {
+        label: "Display News",
+        node_data: { sample: "News data will appear here after payment" },
+      },
+    },
+  ],
+  edges: [
+    { id: "e1-2", source: "nexus-pay-1", target: "print-result", sourceHandle: "data", targetHandle: "test" },
+  ],
+};
+
+/**
+ * Template 5: x402 Weather Data Access
+ */
+export const x402WeatherDataTemplate = {
+  name: "x402 Weather Data",
+  description: "Access premium weather forecasts with automatic micropayments via Nexus Pay.",
+  category: "nexus",
+  difficulty: "Beginner",
+  featured: true,
+  learnMore: "Pay-per-call weather API access. Each request costs a small fee that's automatically handled by the Nexus payment system.",
+  nodes: [
+    {
+      id: "nexus-pay-weather",
+      type: "nexusPay",
+      position: { x: 100, y: 150 },
+      data: {
+        label: "Fetch Weather Data",
+        node_data: {
+          url: "http://localhost:4000/api/weather",
+          chainId: 240,
+          nexusBackendUrl: "http://localhost:3001",
+        },
+      },
+    },
+    {
+      id: "condition-temp",
+      type: "condition",
+      position: { x: 400, y: 150 },
+      data: {
+        label: "Temp > 25C?",
+        node_data: { condition: "price > 25" },
+      },
+    },
+    {
+      id: "print-hot",
+      type: "print",
+      position: { x: 700, y: 80 },
+      data: {
+        label: "Hot Weather Alert",
+        node_data: { sample: "Temperature is above 25C!" },
+      },
+    },
+    {
+      id: "print-normal",
+      type: "print",
+      position: { x: 700, y: 220 },
+      data: {
+        label: "Normal Weather",
+        node_data: { sample: "Temperature is comfortable." },
+      },
+    },
+  ],
+  edges: [
+    { id: "e1-2", source: "nexus-pay-weather", target: "condition-temp", sourceHandle: "data", targetHandle: "price" },
+    { id: "e2-3", source: "condition-temp", target: "print-hot", sourceHandle: "true-path", targetHandle: "test", label: "True" },
+    { id: "e2-4", source: "condition-temp", target: "print-normal", sourceHandle: "false-path", targetHandle: "test", label: "False" },
+  ],
+};
+
+/**
+ * Template 6: x402 AI-Powered Trading Analysis
+ */
+export const x402AITradingTemplate = {
+  name: "x402 AI Trading Signals",
+  description: "Access AI-powered trading analysis via paid API and automatically execute trades based on signals.",
+  category: "nexus",
+  difficulty: "Advanced",
+  featured: true,
+  learnMore: "This combines x402 paid API access with DeFi execution. The AI provides trading signals through a paywall, and the workflow automatically acts on bullish recommendations.",
+  nodes: [
+    {
+      id: "nexus-ai",
+      type: "nexusPay",
+      position: { x: 50, y: 150 },
+      data: {
+        label: "Get AI Signal",
+        node_data: {
+          url: "http://localhost:4000/api/ai/trading-signal",
+          chainId: 240,
+          nexusBackendUrl: "http://localhost:3001",
+        },
+      },
+    },
+    {
+      id: "condition-signal",
+      type: "condition",
+      position: { x: 350, y: 150 },
+      data: {
+        label: "Bullish Signal?",
+        node_data: { condition: "price > 0" },
+      },
+    },
+    {
+      id: "swap-buy",
+      type: "swap",
+      position: { x: 650, y: 80 },
+      data: {
+        label: "Execute Buy",
+        node_data: {
+          tokenIn: tokens.USDC.address,
+          tokenOut: tokens.WETH.address,
+          amountIn: "10000000",
+          amountOutMin: "0",
+        },
+      },
+    },
+    {
+      id: "print-hold",
+      type: "print",
+      position: { x: 650, y: 250 },
+      data: {
+        label: "Hold Position",
+        node_data: { sample: "AI recommends holding. No action taken." },
+      },
+    },
+  ],
+  edges: [
+    { id: "e1-2", source: "nexus-ai", target: "condition-signal", sourceHandle: "data", targetHandle: "price" },
+    { id: "e2-3", source: "condition-signal", target: "swap-buy", sourceHandle: "true-path", targetHandle: "activate", label: "True" },
+    { id: "e2-4", source: "condition-signal", target: "print-hold", sourceHandle: "false-path", targetHandle: "test", label: "False" },
+  ],
+};
+
+/**
+ * Template 7: Service Registry Discovery
+ */
+export const registryDiscoveryTemplate = {
+  name: "Service Registry Query",
+  description: "Discover registered API providers in the Nexus ecosystem and compare pricing.",
+  category: "nexus",
+  difficulty: "Intermediate",
+  learnMore: "The Nexus Registry is an on-chain directory of API providers. Query it to find services, compare prices, and verify provider authenticity before making payments.",
+  nodes: [
+    {
+      id: "registry-query",
+      type: "registryQuery",
+      position: { x: 100, y: 150 },
+      data: {
+        label: "Query Registry",
+        node_data: {
+          category: "news",
+          maxPrice: "1000000000000000000",
+          chainId: 240,
+          registryAddress: "",
+        },
+      },
+    },
+    {
+      id: "print-services",
+      type: "print",
+      position: { x: 450, y: 150 },
+      data: {
+        label: "List Services",
+        node_data: { sample: "Available services will be listed here" },
+      },
+    },
+  ],
+  edges: [
+    { id: "e1-2", source: "registry-query", target: "print-services", sourceHandle: "services", targetHandle: "test" },
+  ],
+};
+
+// Export all templates
+export const allTemplates = [
+  // Nexus x402 Templates (Featured)
+  x402CryptoNewsTemplate,
+  x402WeatherDataTemplate,
+  x402AITradingTemplate,
+  registryDiscoveryTemplate,
+  // DeFi Templates
+  buyTheDipTemplate,
+  takeProfitTemplate,
+  priceRangeAlertTemplate,
+];
